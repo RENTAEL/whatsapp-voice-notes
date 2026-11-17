@@ -133,6 +133,8 @@ The [`setup/`](setup/) folder holds the full Claude Code setup this was built wi
 node setup/install.mjs --dry-run
 ```
 
+Or, with the plugin installed, just tell Claude **"set up the full Claude setup"**. Its `team-setup` skill runs the installer, installs OmniRoute, Ollama and OpenCode (with your OK), walks you through the sign-ins and keys only you can do, and checks that everything works.
+
 See [setup/README.md](setup/README.md) for details.
 
 ## License
