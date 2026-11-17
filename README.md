@@ -48,42 +48,6 @@ After that, a typical voice note takes a few seconds on a GPU and under a minute
 
 If you just say "transcribe my latest voice note", Claude looks in `~/Downloads`.
 
-## Fetch voice notes straight from WhatsApp (optional)
-
-Link the tool to your WhatsApp once, like WhatsApp Web. After that, just ask Claude:
-
-> Listen to my latest voice note · What did Jabu say in his voice note? · Transcribe the last 3 voice notes
-
-Claude connects to WhatsApp, downloads the note, transcribes and revises it, shows you the result and disconnects. **Nothing runs in the background**, and nothing is ever sent unless you ask Claude to reply and confirm the exact text.
-
-**Before you link**
-- **Ban risk:** this uses [Baileys](https://github.com/WhiskeySockets/Baileys), an unofficial WhatsApp Web library, which is against WhatsApp's terms. There is a small risk the number gets restricted.
-- **Which notes it can see:** only voice notes received after linking. While it's disconnected, WhatsApp holds new messages for the linked device and delivers them the next time Claude connects.
-
-**Needs:** Node.js 20+.
-
-**Link (once):**
-- Windows: double-click `start-whatsapp.bat`.
-- Any system: `cd whatsapp && npm install && node bridge.mjs link`.
-- Then on your phone open WhatsApp and go to **Settings → Linked devices → Link a device**, and scan the QR code. The device shows up as "Voice Notes".
-
-**Commands (Claude runs these for you):**
-
-```bash
-node whatsapp/bridge.mjs fetch [--from "Jabu"] [--count 3]   # download newest received voice notes, prints JSON
-node whatsapp/bridge.mjs reply <id> reply.txt                # reply in that chat, quoting the voice note
-```
-
-**What it skips:** your own voice notes, view-once notes, status updates and channels.
-
-**Where things are stored:**
-- The login is in `~/.whatsapp-voice-notes/whatsapp-auth`. Treat it like a password.
-- The list of received notes is in `whatsapp-index.json`, in the same folder.
-
-**To unlink:** remove the "Voice Notes" device on your phone.
-
-Filter tests: `cd whatsapp && npm test`.
-
 ## Web app (optional)
 
 Run `python scripts/run.py`, or on Windows double-click `start.bat`, then open http://localhost:8765. On that page you can:
@@ -122,7 +86,6 @@ Settings (environment variables):
   - detects the language
   - for Afrikaans, forces `af` with a local vocabulary hint, since Whisper often mistakes Afrikaans for Dutch
   - transcribes, translates and serves the web app
-- `whatsapp/bridge.mjs`: on-demand WhatsApp link (`link` / `fetch` / `reply`), using Baileys.
 - `skills/whatsapp-voice-notes/SKILL.md`: the exact steps Claude follows, including the revision rules for Afrikaans.
 
 ## The whole Claude setup (optional)

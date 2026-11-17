@@ -11,15 +11,7 @@ The audio is transcribed on this machine by Whisper (`large-v3`). You, Claude, t
 
 - The plugin root is two folders above this skill's base directory: `<base>/../..`. It contains `scripts/run.py`.
 - The audio file is the path the user gave or attached.
-- **The user asks for a voice note straight from WhatsApp**, for example "listen to my latest voice note" or "what did Jabu say in his voice note". Fetch it on demand:
-  ```bash
-  cd "<root>/whatsapp" && ( [ -d node_modules ] || npm install --no-fund --no-audit ) && node bridge.mjs fetch [--from "<name or number>"] [--count N]
-  ```
-  - `--from` matches the sender's WhatsApp name or number, case-insensitive. `--count` defaults to 1, the newest.
-  - stdout is a JSON list: `[{id, from, number, group, time, seconds, file}]`. Use each `file` in Step 2, and keep the `id` in case the user wants a reply sent.
-  - Exit code 3 means WhatsApp is not linked yet. Tell the user to run `node bridge.mjs link` in `<root>/whatsapp` (or double-click `start-whatsapp.bat`) and scan the QR code. You cannot scan it for them.
-  - An empty list means no voice notes matched. Only notes received after linking can be fetched; older ones can be downloaded in WhatsApp Web and given to you as a file.
-- If the user gave no file and doesn't mean WhatsApp, list the newest audio files in `~/Downloads`: `WhatsApp Ptt*`, `WhatsApp Audio*`, `PTT-*`, `AUD-*`, `*.opus`. Ask which one(s) they mean.
+- If the user gave no file, list the newest audio files in `~/Downloads`: `WhatsApp Ptt*`, `WhatsApp Audio*`, `PTT-*`, `AUD-*`, `*.opus`. Ask which one(s) they mean.
 
 ## Step 2: transcribe
 
@@ -88,7 +80,7 @@ Reply in chat in this format, with one block per voice note:
 ```
 
 - For notes over 5 minutes, put a 3 to 5 bullet summary with `[mm:ss]` timestamps first. Then give the full revised transcript.
-- If the user asks you to send the result somewhere (email, Teams, WhatsApp, a file), draft it and show them. Send only after they confirm.
+- If the user asks you to send the result somewhere (email, Teams, a file), draft it and show them. Send only after they confirm.
 
 ## Privacy
 
@@ -102,17 +94,6 @@ Reply in chat in this format, with one block per voice note:
 - `python "<root>/scripts/run.py"` with no file starts a local page at http://localhost:8765.
 - On that page the user can drag in voice notes, play them (and seek through long ones) and read the raw transcript and Whisper's English.
 - On Windows the user can double-click `start.bat` in the plugin root instead.
-
-## Replying in WhatsApp (only when asked)
-
-- If the user asks you to send the transcript back to the person, write the reply text to a temporary file. Use WhatsApp formatting: *bold* with single asterisks, no headers.
-- Show the user the exact text, and send only after they confirm. Then run:
-  ```bash
-  cd "<root>/whatsapp" && node bridge.mjs reply "<id>" "<text file>"
-  ```
-- This sends a message as the user, quoting the voice note, so never send without that confirmation.
-- Nothing runs in the background: each `fetch`, `reply` or `link` connects, does one job and disconnects.
-- Ban risk: the WhatsApp link uses an unofficial library (Baileys), so there is a small risk the number gets restricted. Mention it once when the user first links.
 
 ## Settings (environment variables)
 
