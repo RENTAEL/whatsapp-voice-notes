@@ -95,6 +95,16 @@ Reply in chat in this format, with one block per voice note:
 - On that page the user can drag in voice notes, play them (and seek through long ones) and read the raw transcript and Whisper's English.
 - On Windows the user can double-click `start.bat` in the plugin root instead.
 
+## WhatsApp auto-transcribe (optional, for the user)
+
+- If the user wants voice notes handled automatically inside WhatsApp, point them to the bridge. Windows: `start-whatsapp.bat` in the plugin root. Any system: `cd "<root>/whatsapp" && npm install && npm start`.
+- It shows a QR code, and the user scans it in WhatsApp under Settings → Linked devices. You cannot scan it for them.
+- From then on, every voice note they receive in a direct chat is answered in that chat with the revised transcript (it uses the Step 3 rules above).
+- Before they start it, say clearly:
+  - It uses an unofficial library, so there is a small risk the number gets banned.
+  - Replies are visible to whoever sent the note. `ALLOW=<numbers>` limits replies to chosen numbers.
+- Never start the bridge yourself without the user's go-ahead, because it sends messages as them.
+
 ## Settings (environment variables)
 
 - `WHISPER_MODEL`: the model to use; default `large-v3`. Do not use `*-turbo` models, because they cannot translate.

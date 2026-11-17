@@ -48,6 +48,43 @@ After that, a typical voice note takes a few seconds on a GPU and under a minute
 
 If you just say "transcribe my latest voice note", Claude looks in `~/Downloads`.
 
+## WhatsApp auto-transcribe (optional)
+
+Link the tool to your WhatsApp like WhatsApp Web. After that, every voice note you **receive** is transcribed, revised by Claude and answered in the same chat with the English translation and action items, all automatically.
+
+**Before you use it**
+- **Ban risk:** this uses [Baileys](https://github.com/WhiskeySockets/Baileys), an unofficial WhatsApp Web library. That is against WhatsApp's terms, so there is a small risk the number gets restricted. Prefer a personal or spare number over a key business line.
+- **Replies are visible:** everyone you reply to sees the transcript. Use `ALLOW` to limit replies to chosen numbers.
+
+**Needs:** Node.js 20+ and the Claude Code CLI (`claude`) signed in on this machine, plus everything from Requirements above.
+
+**Start it:**
+- Windows: double-click `start-whatsapp.bat`.
+- Any system: `cd whatsapp && npm install && npm start`.
+- The first time, scan the QR code: on your phone open WhatsApp, then **Settings → Linked devices → Link a device**.
+
+**Default behaviour:**
+- **Who gets a reply:** direct chats only. Groups, status updates, your own voice notes and view-once notes are skipped.
+- **Order:** one note at a time.
+- **Flood limit:** at most one note every 10 seconds per chat, and at most 10 waiting.
+- **After the PC was off:** only notes from the last hour are answered.
+- **Long notes:** notes over 30 minutes are skipped.
+- **If Claude can't be reached:** the raw Whisper transcript is sent instead.
+
+**Safety:**
+- Claude runs with **no tools, no MCP servers, no settings and no hooks**. A voice note that says "ignore your instructions and…" can only change the text of the reply; it can't read files or run anything. This was tested.
+- The login is stored in `~/.whatsapp-voice-notes/whatsapp-auth`. Treat that folder like a password.
+- To unlink, remove the "Voice Notes" device on your phone, or delete that folder.
+
+| Variable | Does | Default |
+|---|---|---|
+| `ALLOW` | Comma-separated numbers (with country code) that get replies | everyone in direct chats |
+| `REPLY_IN_GROUPS` | `1` = also reply in groups | off |
+| `MAX_MINUTES` | Skip notes longer than this | `30` |
+| `CLAUDE_BIN`, `PYTHON` | Paths, if they are not on PATH | `claude`, `python` |
+
+Test the pipeline without WhatsApp: `node whatsapp/bridge.mjs --test note.ogg`. Run the filter tests: `cd whatsapp && npm test`.
+
 ## Web app (optional)
 
 Run `python scripts/run.py`, or on Windows double-click `start.bat`, then open http://localhost:8765. On that page you can:
