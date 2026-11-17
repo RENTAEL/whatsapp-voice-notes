@@ -31,7 +31,7 @@ const GROUPS = process.env.REPLY_IN_GROUPS === '1'
 const ALLOW = (process.env.ALLOW || '').split(',').map(s => s.replace(/\D/g, '')).filter(Boolean)
 const MAX_SECONDS = Number(process.env.MAX_MINUTES || 30) * 60
 const MAX_QUEUE = 10, MAX_AGE_S = 3600 // skip the backlog older than an hour after the PC was off
-const logger = pino({ level: 'warn' })
+const logger = pino({ level: 'fatal' }) // Baileys warns a lot about chat-label sync we don't use; we log our own events
 const log = (...a) => console.log(new Date().toLocaleTimeString(), ...a)
 
 // Revision rules live in the skill, so the bridge and the skill never drift apart.
