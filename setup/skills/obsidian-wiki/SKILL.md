@@ -106,7 +106,10 @@ Scheduler task "Agent Hub keep-alive" (set up by the user with
 `scripts/register-keepalive.ps1`) runs it every 5 minutes and at sign-in.
 Log: `%LOCALAPPDATA%\agent-hub\keepalive.log`.
 The view also starts hidden at sign-in (`Startup\agent-hub-view.vbs`, log
-`%LOCALAPPDATA%\agent-hub\view.log`); `hub-view\start.cmd` starts it and opens it.
+`%LOCALAPPDATA%\agent-hub\view.log`); `hub-view\start.vbs` starts it hidden and opens it. On Windows, start
+background processes through a hidden console (`scripts\hidden.vbs`, or `cmd /c …` run with
+window style 0 from a .vbs), never with a bare detached spawn: that opens a visible console window
+for every program the process starts.
 
 OpenCode hub runs use `--standalone` and a lean config
 (`%LOCALAPPDATA%\agent-hub\opencode-lean`) with every tool denied: the user's

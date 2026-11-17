@@ -130,7 +130,7 @@ function run(cmd) {
   if (!cmd.split(' ').every(w => SAFE.test(w))) throw new Error(`refusing odd command: ${cmd}`)
   console.log(`  $ ${cmd}`)
   if (DRY) return
-  try { execSync(cmd, { stdio: 'inherit' }) } catch { console.log(`  (that failed; carrying on. Run it again yourself later.)`) }
+  try { execSync(cmd, { stdio: 'inherit', windowsHide: true }) } catch { console.log(`  (that failed; carrying on. Run it again yourself later.)`) }
 }
 
 function plugins() {
@@ -139,7 +139,7 @@ function plugins() {
   const knownRepos = new Set(Object.values(known).map(m => m?.source?.repo?.toLowerCase()))
   const installed = tryJson(path.join(CLAUDE, 'plugins', 'installed_plugins.json'), {}).plugins || {}
   const enabled = tryJson(path.join(CLAUDE, 'settings.json'), {}).enabledPlugins || {}
-  try { execSync('claude --version', { stdio: 'ignore' }) } catch { return console.log('  claude CLI not found; plugins will be offered when Claude Code next starts') }
+  try { execSync('claude --version', { stdio: 'ignore', windowsHide: true }) } catch { return console.log('  claude CLI not found; plugins will be offered when Claude Code next starts') }
   for (const [name, m] of Object.entries(add.extraKnownMarketplaces))
     if (!known[name] && !knownRepos.has(m.source.repo.toLowerCase())) run(`claude plugin marketplace add ${m.source.repo}`)
   for (const id of Object.keys(add.enabledPlugins))
@@ -166,8 +166,8 @@ function hints() {
     }
   }
   if (!process.env.LMSTUDIO_API_KEY) console.log('\nSet LMSTUDIO_API_KEY (your OmniRoute gateway key) as a user environment variable. See setup/.env.example.')
-  console.log('Free models need OmniRoute running: npm i -g omniroute && omniroute serve --daemon --no-open')
-  if (process.platform === 'win32') console.log('  To start it at sign-in, copy setup/omniroute/omniroute.vbs into shell:startup.')
+  if (process.platform === 'win32') console.log('Free models need OmniRoute: npm i -g omniroute, then run setup/omniroute/omniroute.vbs (hidden, no window). Copy it into shell:startup to start it at sign-in.')
+  else console.log('Free models need OmniRoute running: npm i -g omniroute && omniroute serve --daemon --no-open')
 }
 
 const MAIN = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href

@@ -22,17 +22,24 @@ const portOpen = (port) => new Promise((resolve) => {
 });
 
 // Detached and hidden, so it outlives this script; output goes to its own log.
+// On Windows it runs inside a hidden console (hidden.vbs): a plain detached spawn opens a visible window
+// for every console program the started process launches.
 function start(name, cmd, args, logFile) {
   if (dry) return console.log(`would start ${name}`);
-  const out = logFile ? fs.openSync(path.join(LOGS, logFile), 'a') : 'ignore';
-  spawn(cmd, args, { detached: true, windowsHide: true, stdio: ['ignore', out, out] }).unref();
+  if (process.platform === 'win32') {
+    const logPath = logFile ? path.join(LOGS, logFile) : 'NUL';
+    spawn('wscript.exe', [path.join(HERE, 'hidden.vbs'), logPath, cmd, ...args], { detached: true, windowsHide: true, stdio: 'ignore' }).unref();
+  } else {
+    const out = logFile ? fs.openSync(path.join(LOGS, logFile), 'a') : 'ignore';
+    spawn(cmd, args, { detached: true, stdio: ['ignore', out, out] }).unref();
+  }
   log(`started ${name}`);
 }
 
 const OLLAMA_APP = path.join(process.env.LOCALAPPDATA || '', 'Programs', 'Ollama', 'ollama app.exe');
 const checks = [
   ['ollama', () => portOpen(11434), () => fs.existsSync(OLLAMA_APP) ? start('ollama', OLLAMA_APP, []) : start('ollama', 'ollama', ['serve'], 'ollama.log')],
-  ['omniroute', () => portOpen(20128), () => start('omniroute', 'cmd.exe', ['/c', 'omniroute', 'serve', '--daemon', '--no-open', '--no-tray'], 'omniroute.log')],
+  ['omniroute', () => portOpen(20128), () => start('omniroute', 'omniroute', ['serve', '--no-open', '--no-tray'], 'omniroute.log')], // not --daemon: it re-spawns itself outside the hidden console
   ['bridge', async () => watcherAlive(), () => start('bridge', process.execPath, [path.join(HERE, 'agent-bridge.mjs'), '--watch'], 'bridge.log')],
   ['view', () => portOpen(Number(process.env.HUB_VIEW_PORT || 4317)), () => start('view', process.execPath, [path.join(HERE, '..', 'hub-view', 'server.mjs')], 'view.log')],
   // The team list goes stale (models removed, quotas reset, new Ollama pulls): rebuild it every 6 hours.

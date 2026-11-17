@@ -51,7 +51,8 @@ def model():
 def load_audio(path: Path) -> np.ndarray:
     """Any audio format -> 16 kHz mono float32, via the system ffmpeg (PyAV in the wheel is incompatible)."""
     p = subprocess.run(["ffmpeg", "-nostdin", "-loglevel", "error", "-i", str(path), "-f", "s16le", "-ac", "1", "-ar", "16000", "-"],
-                       capture_output=True, timeout=600)
+                       capture_output=True, timeout=600,
+                       creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))  # no console flash on Windows
     if p.returncode or not p.stdout:
         raise RuntimeError("ffmpeg could not read the audio: " + p.stderr.decode(errors="replace")[-300:])
     return np.frombuffer(p.stdout, np.int16).astype(np.float32) / 32768

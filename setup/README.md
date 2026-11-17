@@ -45,12 +45,12 @@ Every file it changes is backed up first as `<file>.bak-<date-time>`. Running it
 - **`settings.additions.json`**: the hooks, env and plugins that get merged in.
 - **`skill-packs.json`**: third-party skill packs, by source repo. They are installed from their own repos, not copied here.
 - **`mcp-servers.json`**: the MCP servers used (memory vault, OmniRoute, Obsidian, REA, agent-desktop), with placeholders for keys.
-- **`omniroute/omniroute.vbs`**: starts the OmniRoute gateway hidden at Windows sign-in. To use it, copy it into `shell:startup`.
+- **`omniroute/omniroute.vbs`**: starts the OmniRoute gateway in a hidden console on Windows, with no window. Copy it into `shell:startup` to start it at sign-in.
 - **`.env.example`**: the environment variables to set yourself.
 
 ## After installing
 
-1. **Free models.** Install and start OmniRoute: `npm i -g omniroute && omniroute serve --daemon --no-open`. Connect your free providers in its dashboard, then set `LMSTUDIO_API_KEY` to its gateway key as a user environment variable.
+1. **Free models.** Install OmniRoute with `npm i -g omniroute` and start it. On Windows run `setup/omniroute/omniroute.vbs`: it starts hidden, with no window (copy it into `shell:startup` to start it at sign-in). Elsewhere: `omniroute serve --daemon --no-open`. Connect your free providers in its dashboard, then set `LMSTUDIO_API_KEY` to its gateway key as a user environment variable.
 2. **Agent hub (optional).** Install [Ollama](https://ollama.com) with a small coder model (`ollama pull qwen2.5-coder:7b`) and the OpenCode CLI (`npm i -g @opencode/cli`).
 3. **Obsidian wiki (optional).** The default vault is `~/Documents/Obsidian Vault`; set `OBSIDIAN_VAULT` to use another one. Edit `~/.claude/skills/obsidian-wiki/scripts/vault-projects.json` (your projects) and `local-only.json` (folders whose work must never go to cloud models).
 4. **MCP servers.** Run the commands the installer printed, filling in your own keys.

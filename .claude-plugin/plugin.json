@@ -1,6 +1,6 @@
 {
   "name": "whatsapp-voice-notes",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Claude listens to WhatsApp voice notes: local Whisper transcription (great for Afrikaans and SA English), then Claude revises it and returns a clean transcript, English translation and action items.",
   "author": { "name": "RENTAEL" },
   "repository": "https://github.com/RENTAEL/whatsapp-voice-notes",
