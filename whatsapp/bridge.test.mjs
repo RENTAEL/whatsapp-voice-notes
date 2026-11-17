@@ -1,31 +1,50 @@
-// node --test   (checks who gets an auto-reply; no WhatsApp connection needed)
+// node --test   (index + selection logic; no WhatsApp connection needed)
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-const { wanted } = await import('./bridge.mjs')
-const now = () => Math.floor(Date.now() / 1000)
+import { toEntry, remember, pick } from './bridge.mjs'
+
 let n = 0
 const msg = (o = {}) => ({
-  key: { remoteJid: o.jid ?? `2782000000${n++}@s.whatsapp.net`, fromMe: o.fromMe ?? false, id: 'ABC' + n, participant: o.participant },
-  messageTimestamp: o.ts ?? now(),
-  message: o.message ?? { audioMessage: { seconds: o.seconds ?? 20, viewOnce: o.viewOnce } },
+  key: { remoteJid: o.jid ?? '27820000001@s.whatsapp.net', fromMe: o.fromMe ?? false, id: o.id ?? 'ID' + n++, participant: o.participant },
+  pushName: o.name ?? 'Jabu',
+  messageTimestamp: o.ts ?? 1000 + n,
+  message: o.message ?? { audioMessage: { seconds: 20, viewOnce: o.viewOnce } },
 })
-test('direct voice note is processed', () => assert.ok(wanted(msg())))
-test('own notes, text, view-once, status are skipped', () => {
-  assert.equal(wanted(msg({ fromMe: true })), null)
-  assert.equal(wanted(msg({ message: { conversation: 'hi' } })), null)
-  assert.equal(wanted(msg({ viewOnce: true })), null)
-  assert.equal(wanted(msg({ jid: 'status@broadcast' })), null)
+
+test('received voice note becomes an entry with number', () => {
+  const e = toEntry(msg())
+  assert.equal(e.from, 'Jabu')
+  assert.equal(e.number, '27820000001')
 })
-test('groups skipped by default', () => assert.equal(wanted(msg({ jid: '123-456@g.us', participant: '27820000001@s.whatsapp.net' })), null))
-test('old backlog and over-long notes skipped', () => {
-  assert.equal(wanted(msg({ ts: now() - 7200 })), null)
-  assert.equal(wanted(msg({ seconds: 31 * 60 })), null)
+test('own, text, view-once, status and newsletter are ignored', () => {
+  assert.equal(toEntry(msg({ fromMe: true })), null)
+  assert.equal(toEntry(msg({ message: { conversation: 'hi' } })), null)
+  assert.equal(toEntry(msg({ viewOnce: true })), null)
+  assert.equal(toEntry(msg({ jid: 'status@broadcast' })), null)
+  assert.equal(toEntry(msg({ jid: '123@newsletter' })), null)
 })
-test('Long timestamp object works', () => assert.ok(wanted(msg({ ts: { toNumber: () => now() } }))))
-test('flood: second note from same chat within 10s skipped', () => {
-  const jid = '27829999999@s.whatsapp.net'
-  assert.ok(wanted(msg({ jid })))
-  assert.equal(wanted(msg({ jid })), null)
+test('ephemeral wrapper and Long timestamp work', () => {
+  const e = toEntry(msg({ ts: { toNumber: () => 5 }, message: { ephemeralMessage: { message: { audioMessage: { seconds: 3 } } } } }))
+  assert.equal(e.time, 5)
 })
-test('ephemeral wrapper is unwrapped', () =>
-  assert.ok(wanted(msg({ message: { ephemeralMessage: { message: { audioMessage: { seconds: 5 } } } } }))))
+test('group note uses the participant number; LID numbers are hidden', () => {
+  assert.equal(toEntry(msg({ jid: '1-2@g.us', participant: '27831112222@s.whatsapp.net' })).number, '27831112222')
+  assert.equal(toEntry(msg({ jid: '999@lid' })).number, '')
+})
+test('pick: newest first, by name or number, with count', () => {
+  const idx = remember({}, [
+    msg({ id: 'a', name: 'Jabu', ts: 10 }), msg({ id: 'b', name: 'Pieter', ts: 30, jid: '27839990000@s.whatsapp.net' }),
+    msg({ id: 'c', name: 'Jabu', ts: 20 }),
+  ])
+  assert.deepEqual(pick(idx).map(e => e.id), ['b'])
+  assert.deepEqual(pick(idx, { from: 'jabu', count: 5 }).map(e => e.id), ['c', 'a'])
+  assert.deepEqual(pick(idx, { from: '+27 83 999' }).map(e => e.id), ['b'])
+  assert.deepEqual(pick(idx, { from: 'nobody' }), [])
+})
+test('re-seen message keeps its downloaded file and name', () => {
+  const idx = remember({}, [msg({ id: 'x', name: 'Jabu' })])
+  idx.x.file = 'f.ogg'
+  remember(idx, [msg({ id: 'x', name: '' })])
+  assert.equal(idx.x.file, 'f.ogg')
+  assert.equal(idx.x.from, 'Jabu')
+})

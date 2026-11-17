@@ -1,10 +1,10 @@
 {
   "name": "whatsapp-voice-notes-bridge",
   "version": "1.0.0",
-  "description": "Links WhatsApp (as a device) to the voice-notes transcriber",
+  "description": "On-demand WhatsApp link for the voice-notes skill (link / fetch / reply)",
   "scripts": {
     "test": "node --test",
-    "start": "node bridge.mjs"
+    "start": "node bridge.mjs link"
   },
   "type": "module",
   "private": true,
