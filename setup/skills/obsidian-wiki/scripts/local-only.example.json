@@ -1,0 +1,9 @@
+{
+  "_why": "Folders whose work must stay on this PC (customer data, live keys, ID documents). hub-ask sends their jobs to Ollama only. The longest matching path wins, so cloudOk can open a subfolder of a localOnly folder. Edit this list for your own machine.",
+  "localOnly": [
+    "{HOME}/Documents/Clients"
+  ],
+  "cloudOk": [
+    "{HOME}/Documents/Clients/public-site"
+  ]
+}

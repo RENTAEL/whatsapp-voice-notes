@@ -1,0 +1,37 @@
+{
+  "_about": "Which project page each Claude Code session belongs to. A session matches by folder first (longest prefix wins), then by title. Add a line when a new project starts; a session in an unknown project folder gets a new draft page made for it automatically.",
+  "projects": [
+    {
+      "slug": "my-app",
+      "folders": [
+        "{HOME}/Downloads/Projects/My App"
+      ],
+      "titles": []
+    },
+    {
+      "slug": "it-support",
+      "folders": [],
+      "titles": [
+        "printer",
+        "wifi",
+        "laptop"
+      ]
+    }
+  ],
+  "_redact": "Words cut from session titles before they reach the shared vault (people's names). Word -> replacement.",
+  "redact": {
+    "Alex": "a colleague"
+  },
+  "ignoreFolders": [
+    "{TEMP}",
+    "C:/Windows"
+  ],
+  "_containers": "Folders that hold projects but are not one. A session started directly in one matches by title only; a session in an unknown folder below one gets a new page named after that subfolder.",
+  "containers": [
+    "{HOME}",
+    "{HOME}/Downloads",
+    "{HOME}/Downloads/Projects",
+    "{HOME}/Documents"
+  ],
+  "scratch": "{HOME}/AppData/Roaming/Claude/scratch-workspaces"
+}

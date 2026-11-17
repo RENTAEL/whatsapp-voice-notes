@@ -1,0 +1,42 @@
+{
+  "_about": "Merged into ~/.claude/settings.json by install.mjs. Only keys you don't have are added; your own values always win. {SKILLS} becomes your ~/.claude/skills folder.",
+  "skillListingBudgetFraction": 0.25,
+  "env": {
+    "ECC_DISABLED_HOOKS": "pre:observe,post:observe:continuous-learning",
+    "MCP_TIMEOUT": "60000"
+  },
+  "hooks": {
+    "Stop": [
+      { "hooks": [
+        { "type": "command", "command": "node", "args": ["{SKILLS}/obsidian-wiki/scripts/hub-stop-hook.mjs"], "timeout": 20 },
+        { "type": "command", "command": "node", "args": ["{SKILLS}/obsidian-wiki/scripts/vault-session-hook.mjs"], "timeout": 20 }
+      ] }
+    ],
+    "SubagentStart": [
+      { "hooks": [ { "type": "command", "command": "node", "args": ["{SKILLS}/obsidian-wiki/scripts/hub-claude-hook.mjs"], "timeout": 10 } ] }
+    ],
+    "SubagentStop": [
+      { "hooks": [ { "type": "command", "command": "node", "args": ["{SKILLS}/obsidian-wiki/scripts/hub-claude-hook.mjs"], "timeout": 10 } ] }
+    ]
+  },
+  "extraKnownMarketplaces": {
+    "ecc": { "source": { "source": "github", "repo": "affaan-m/ECC" } },
+    "claude-plugins-official": { "source": { "source": "github", "repo": "anthropics/claude-plugins-official" } },
+    "impeccable": { "source": { "source": "github", "repo": "pbakaus/impeccable" } },
+    "ponytail": { "source": { "source": "github", "repo": "DietrichGebert/ponytail" } },
+    "brag": { "source": { "source": "github", "repo": "latent-spaces/brag" } },
+    "understand-anything": { "source": { "source": "github", "repo": "Egonex-AI/Understand-Anything" } },
+    "architecture-diagram-skill": { "source": { "source": "github", "repo": "konraddzbik/architecture-diagram-skill" } },
+    "whatsapp-voice-notes": { "source": { "source": "github", "repo": "RENTAEL/whatsapp-voice-notes" } }
+  },
+  "enabledPlugins": {
+    "ecc@ecc": true,
+    "playwright@claude-plugins-official": true,
+    "impeccable@impeccable": true,
+    "ponytail@ponytail": true,
+    "brag@brag": true,
+    "understand-anything@understand-anything": true,
+    "architecture-diagram@architecture-diagram-skill": true,
+    "whatsapp-voice-notes@whatsapp-voice-notes": true
+  }
+}

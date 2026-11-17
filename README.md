@@ -125,6 +125,16 @@ Settings (environment variables):
 - `whatsapp/bridge.mjs`: on-demand WhatsApp link (`link` / `fetch` / `reply`), using Baileys.
 - `skills/whatsapp-voice-notes/SKILL.md`: the exact steps Claude follows, including the revision rules for Afrikaans.
 
+## The whole Claude setup (optional)
+
+The [`setup/`](setup/) folder holds the full Claude Code setup this was built with: skills, plugins, rules, hooks, free models through OmniRoute, and the agent hub. Its installer only adds what you don't have. It never replaces your own CLAUDE.md rules, settings or skills, and it holds no keys.
+
+```bash
+node setup/install.mjs --dry-run
+```
+
+See [setup/README.md](setup/README.md) for details.
+
 ## License
 
 MIT

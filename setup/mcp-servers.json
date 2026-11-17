@@ -1,0 +1,8 @@
+{
+  "_about": "MCP servers in this setup. install.mjs prints the commands; it never adds them for you, because some need keys only you have. Values in <angle brackets> are yours to fill in.",
+  "ecc-memory-vault": { "npm": "ecc-universal", "command": "node", "args": ["<npm root -g>/ecc-universal/scripts/memory-mcp.mjs"], "env": { "ECC_MEMORY_HARNESS": "claude", "ECC_MEMORY_PROJECT_ROOT": "<folder for the memory vault>" } },
+  "omniroute": { "npm": "omniroute", "command": "omniroute", "args": ["--mcp"], "env": { "OMNIROUTE_BASE_URL": "http://localhost:20128" } },
+  "obsidian": { "npm": "obsidian-mcp-server", "command": "obsidian-mcp-server", "args": [], "env": { "OBSIDIAN_API_KEY": "<from Obsidian's Local REST API plugin>", "OBSIDIAN_BASE_URL": "https://127.0.0.1:27124" } },
+  "rea": { "npm": "rea-agents", "command": "rea", "args": ["mcp"], "env": {} },
+  "agent-desktop": { "npm": "agent-desktop", "command": "agent-desktop", "args": ["mcp"], "env": {} }
+}
