@@ -1,0 +1,11 @@
+.venv/
+venv/
+__pycache__/
+*.log
+notes/
+*.ogg
+*.opus
+*.m4a
+*.mp3
+*.wav
+*.aac

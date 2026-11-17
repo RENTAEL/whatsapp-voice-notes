@@ -1,0 +1,12 @@
+{
+  "name": "whatsapp-voice-notes",
+  "owner": { "name": "RENTAEL" },
+  "plugins": [
+    {
+      "name": "whatsapp-voice-notes",
+      "source": "./",
+      "description": "Claude listens to WhatsApp voice notes: local Whisper transcription, Claude revision, English translation and action items.",
+      "version": "1.0.0"
+    }
+  ]
+}
